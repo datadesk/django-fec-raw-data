@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 
 logger = logging.getLogger('fec')
 # Path to ruby script that uses Fech to save a filing
-FECH_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'fech_filing.rb')
+FECH_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'fech_filing.rb')
 # If there are no downloaded filings
 DEFAULT_FIRST_FILING = 1000000
 # Number of threads to use while downloading
