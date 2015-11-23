@@ -5,8 +5,8 @@ import feedparser
 from tomorrow import threads
 from django.conf import settings
 from django.core.management.base import BaseCommand
+logger = logging.getLogger(__name__)
 
-logger = logging.getLogger('fec')
 # Path to ruby script that uses Fech to save a filing
 FECH_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'fech_filing.rb')
 # If there are no downloaded filings
@@ -119,7 +119,7 @@ class Command(BaseCommand):
             else:
                 # Interface with fech to get the data
                 self.fech_filing(filing_id)
-    
+
     @threads(DOWNLOAD_THREADS)
     def fech_filing(self, filing_no):
         """
