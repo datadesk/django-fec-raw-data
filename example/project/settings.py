@@ -18,7 +18,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'toolbox',
-    'calaccess_raw',
+    'fec_raw',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -35,18 +35,12 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'NAME': 'calaccess_raw',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fec_raw',
+        'USER': 'postgres',
         'PASSWORD': '',
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
         'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'local_infile': 1,
-        }
-    },
-    'dat': {
-        'source': 'YOUR_LOCAL_DAT_PATH_HERE'
+        'PORT': '5432'
     }
 }
 
