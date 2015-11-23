@@ -25,11 +25,11 @@ $ python manage.py migrate
 Download the FEC filings.
 
 ```bash
-$ python manage.py download
+$ python manage.py downloadfecrawdata
 ```
 
 Load them into the database.
 
 ```bash
-$ python manage.py load
+$ python manage.py loadfecrawdata
 ```
