@@ -3,8 +3,7 @@ require 'csv'
 
 begin
     filing_no = ARGV[0]
-
-    base_dir = File.join('fec_raw', 'data')
+    base_dir = ARGV[1]
 
     # Where to store .fec files
     raw_path = File.join(base_dir, 'raw')
@@ -55,7 +54,6 @@ begin
             end
         end
     end
-
     puts 'SUCCESS'
 rescue
     puts 'ERROR'

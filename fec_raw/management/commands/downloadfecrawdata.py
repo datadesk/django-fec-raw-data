@@ -1,15 +1,14 @@
 import os
-import logging
 import subprocess
 import feedparser
 from tomorrow import threads
 from django.conf import settings
-from django.core.management.base import BaseCommand
-logger = logging.getLogger(__name__)
+from fec_raw import get_download_directory
+from fec_raw.management.commands import FecCommand
 
 
 
-class Command(BaseCommand):
+class Command(FecCommand):
     help = "Download FEC filings to data directory"
     # Path to ruby script that uses Fech to save a filing
     FECH_PATH = os.path.join(
@@ -22,8 +21,8 @@ class Command(BaseCommand):
     )
     # If there are no downloaded filings
     DEFAULT_FIRST_FILING = 1000000
-    # Number of threads to use while downloading
-    DOWNLOAD_THREADS = 4
+    # Where to download files
+    DATA_DIR = get_download_directory()
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -70,10 +69,10 @@ class Command(BaseCommand):
         and get_latest_filing_number. Loops through those records and, if it
         hasn't been previously downloaded, downloads it.
         """
+        self.header("Downloading raw FEC filings")
         # Create the raw data directory if it doesn't exist
-        raw_data_path = os.path.join(settings.DATA_DIR, 'raw')
-        if not os.path.exists(raw_data_path):
-            os.makedirs(raw_data_path)
+        raw_data_path = os.path.join(self.DATA_DIR, 'raw')
+        os.path.exists(raw_data_path) or os.makedirs(raw_data_path)
 
         # Figure out which filings we're going to try to get
         # If we want a specific filing, set both the first and last record to
@@ -93,10 +92,10 @@ class Command(BaseCommand):
             last_record = self.get_latest_filing_number()
 
         if first_record > last_record:
-            logger.error('No records to download')
+            self.failure('No records to download')
             return
 
-        logger.info(
+        self.log(
             'Attempting to download filings {} to {}'.format(
                 first_record,
                 last_record
@@ -109,7 +108,7 @@ class Command(BaseCommand):
 
             # It should exist at this path
             filing_path = os.path.join(
-                settings.DATA_DIR,
+                self.DATA_DIR,
                 'raw',
                 filing_id + '.fec'
             )
@@ -117,23 +116,23 @@ class Command(BaseCommand):
             # If it does AND we're not forcing a refresh ...
             if os.path.isfile(filing_path) and not options['force']:
                 # Skip to the next record
-                logger.info('Already downloaded filing {}'.format(filing_id))
+                self.log('Already downloaded filing {}'.format(filing_id))
                 continue
             # Otherwise ...
             else:
                 # Interface with fech to get the data
                 self.fech_filing(filing_id)
 
-    @threads(self.DOWNLOAD_THREADS)
+    @threads(getattr(settings, 'FEC_DOWNLOAD_THREADS', 4))
     def fech_filing(self, filing_no):
         """
         Interfaces with Ruby library Fech to return data for a particular filing
         number, saves data to CSVs in DATA_DIR
         """
-        logger.info('Fech-ing filing {}'.format(filing_no))
+        self.log('Fech-ing filing {}'.format(filing_no))
 
         p = subprocess.Popen(
-            ['ruby', self.FECH_PATH, filing_no],
+            ['ruby', self.FECH_PATH, filing_no, self.DATA_DIR],
             stdout=subprocess.PIPE,
             stderr=None
         )
@@ -145,16 +144,17 @@ class Command(BaseCommand):
 
         # TODO: Refactor/fix the way this error handling works
         if message[0] == 'E':
+            self.failure(' - Failed to download filing {}'.format(filing_no))
             raise Exception('Failed to download filing {}'.format(filing_no))
         elif message[0] == 'S':
-            logger.info('Downloaded filing {}'.format(filing_no))
+            self.success(' - Downloaded filing {}'.format(filing_no))
 
     def get_latest_downloaded_filing_number(self):
         """
         Checks data directory to get latest previously downloaded
         filing number.
         """
-        files = os.listdir(os.path.join(settings.DATA_DIR, 'raw'))
+        files = os.listdir(os.path.join(self.DATA_DIR, 'raw'))
         try:
             filing_numbers = [int(filename.split('.')[0]) for filename in files if not (filename.startswith('.') or filename.startswith('fech'))]
             return sorted(filing_numbers, reverse=True)[0]
@@ -165,7 +165,7 @@ class Command(BaseCommand):
         """
         Uses FEC RSS feed to get the ID of the latest filing.
         """
-        logger.info('Getting latest filing number from FEC...')
+        self.log('Getting latest filing number from FEC...')
 
         url = 'http://efilingapps.fec.gov/rss/generate?preDefinedFilingType=ALL'
         d = feedparser.parse(url)
@@ -180,5 +180,5 @@ class Command(BaseCommand):
         link = entries[0]['link']
         latest = int(link.split('/')[-1].replace('.fec', ''))
 
-        logger.info('Latest filing number is {}'.format(latest))
+        self.log('Latest filing number is {}'.format(latest))
         return latest
