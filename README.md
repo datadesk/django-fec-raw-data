@@ -2,7 +2,7 @@
 
 A Django app to download, extract and load campaign finance from the Federal Election Commission.
 
-It relies on the New York Times Fech library to download filings as CSV files, then loads them
+It relies on the New York Times [Fech](http://nytimes.github.io/Fech/) library to download filings as CSV files, then loads them
 into a database preserving all the fields in the raw data.
 
 ## Quick start
