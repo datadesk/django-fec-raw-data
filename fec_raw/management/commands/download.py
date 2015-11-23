@@ -7,18 +7,25 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 logger = logging.getLogger(__name__)
 
-# Path to ruby script that uses Fech to save a filing
-FECH_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'fech_filing.rb')
-# If there are no downloaded filings
-DEFAULT_FIRST_FILING = 1000000
-# Number of threads to use while downloading
-DOWNLOAD_THREADS = 4
+
 
 class Command(BaseCommand):
     help = "Download FEC filings to data directory"
+    # Path to ruby script that uses Fech to save a filing
+    FECH_PATH = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(__file__)
+            )
+        ),
+        'fech_filing.rb'
+    )
+    # If there are no downloaded filings
+    DEFAULT_FIRST_FILING = 1000000
+    # Number of threads to use while downloading
+    DOWNLOAD_THREADS = 4
 
     def add_arguments(self, parser):
-
         parser.add_argument(
             '--filing',
             action='store',
@@ -28,7 +35,6 @@ class Command(BaseCommand):
             help='ID of single filing to retrieve',
             dest='filing'
         )
-
         parser.add_argument(
             '--first',
             '-f',
@@ -39,7 +45,6 @@ class Command(BaseCommand):
             help='ID of first record to be added',
             dest='first_record'
         )
-
         parser.add_argument(
             '--last',
             '-l',
@@ -50,7 +55,6 @@ class Command(BaseCommand):
             help='ID of last record to be added',
             dest='last_record'
         )
-
         parser.add_argument(
             '--force',
             action='store_true',
@@ -67,7 +71,7 @@ class Command(BaseCommand):
         hasn't been previously downloaded, downloads it.
         """
         # Create the raw data directory if it doesn't exist
-        raw_data_path = os.path.join(settings.DATA_DIR,'raw')
+        raw_data_path = os.path.join(settings.DATA_DIR, 'raw')
         if not os.path.exists(raw_data_path):
             os.makedirs(raw_data_path)
 
@@ -120,7 +124,7 @@ class Command(BaseCommand):
                 # Interface with fech to get the data
                 self.fech_filing(filing_id)
 
-    @threads(DOWNLOAD_THREADS)
+    @threads(self.DOWNLOAD_THREADS)
     def fech_filing(self, filing_no):
         """
         Interfaces with Ruby library Fech to return data for a particular filing
@@ -129,7 +133,7 @@ class Command(BaseCommand):
         logger.info('Fech-ing filing {}'.format(filing_no))
 
         p = subprocess.Popen(
-            ['ruby', FECH_PATH, filing_no],
+            ['ruby', self.FECH_PATH, filing_no],
             stdout=subprocess.PIPE,
             stderr=None
         )
@@ -155,7 +159,7 @@ class Command(BaseCommand):
             filing_numbers = [int(filename.split('.')[0]) for filename in files if not (filename.startswith('.') or filename.startswith('fech'))]
             return sorted(filing_numbers, reverse=True)[0]
         except:
-            return DEFAULT_FIRST_FILING
+            return self.DEFAULT_FIRST_FILING
 
     def get_latest_filing_number(self):
         """
