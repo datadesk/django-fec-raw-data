@@ -3,8 +3,8 @@ from setuptools import setup
 
 
 setup(
-    name='django-fec-raw',
-    version='0.1',
+    name='django-fec-raw-data',
+    version='0.0.1',
     packages=['fec_raw'],
     include_package_data=True,
     license='MIT',  # example license
