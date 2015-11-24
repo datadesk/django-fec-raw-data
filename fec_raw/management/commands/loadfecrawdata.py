@@ -1,17 +1,16 @@
 import os
-import logging
 from django.conf import settings
 from postgres_copy import CopyMapping
+from fec_raw import get_download_directory
 from string import ascii_letters, punctuation
-from django.core.management.base import BaseCommand
+from fec_raw.management.commands import FecCommand
 from fec_raw.models import RawF3XFiling, RawF3PFiling, RawF24Filing
 from fec_raw.models import RawContribution, RawIndependentExpenditure
 
-logger = logging.getLogger('fec')
 
-
-class Command(BaseCommand):
+class Command(FecCommand):
     help = "Load downloaded filings into database"
+    DATA_DIR = get_download_directory()
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -28,6 +27,7 @@ class Command(BaseCommand):
         CSVs of that type, using the CopyMapping library to dump the records
         into the raw database, preserving all fields from the original data.
         """
+        self.header("Load raw FEC filings")
         name_to_model = {
             "F3X": RawF3XFiling,
             "F3P": RawF3PFiling,
@@ -46,11 +46,11 @@ class Command(BaseCommand):
         loaded = 0
 
         for name, model in name_to_model.items():
-            data_dir = os.path.join(settings.DATA_DIR, name)
+            data_dir = os.path.join(self.DATA_DIR, name)
             # If, for some reason, we have no filings of this type
             if not os.path.exists(data_dir):
                 continue
-            
+
             # We're making a mapping of CSV to model fields for CopyMapping
             # In this case, they're identical.
             mapping = {
@@ -63,16 +63,16 @@ class Command(BaseCommand):
                     # Remove our list of ignore characters from the file name
                     # to give us just the filing number.
                     filing_no = int(file_name.translate(None, ignore))
-                    
+
                     if model.objects.filter(filing_no=filing_no).exists():
-                        logger.info(
+                        self.log(
                             '{} CSV for filing {} is already in the DB'.format(
                                 name,
                                 filing_no
                             )
                         )
                     else:
-                        logger.info(
+                        self.log(
                             'Loading {} CSV for filing {}'.format(
                                 name,
                                 filing_no
@@ -87,6 +87,6 @@ class Command(BaseCommand):
                             c.save(silent=True)
                             loaded += 1
                         except:
-                            logger.error('Error on {} CSV for filing {}'.format(name, filing_no))
+                            self.failure('Error on {} CSV for filing {}'.format(name, filing_no))
 
-        logger.info("Loaded {} CSVs".format(loaded))
+        self.success("Loaded {} CSVs".format(loaded))

@@ -145,7 +145,6 @@ class Command(FecCommand):
         # TODO: Refactor/fix the way this error handling works
         if message[0] == 'E':
             self.failure(' - Failed to download filing {}'.format(filing_no))
-            raise Exception('Failed to download filing {}'.format(filing_no))
         elif message[0] == 'S':
             self.success(' - Downloaded filing {}'.format(filing_no))
 

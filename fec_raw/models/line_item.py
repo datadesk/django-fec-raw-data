@@ -8,180 +8,225 @@ class RawContribution(models.Model):
     Specific to Schedule A line items.
     """
     filing_no = IntegerField(
-        db_index=True)
+        db_index=True
+    )
     form_type = CharField(
-        max_length=8)
+        max_length=8
+    )
     filer_committee_id_number = CharField(
-        max_length=9)
+        max_length=9
+    )
     transaction_id = CharField(
         max_length=20,
         null=True,
-        blank=True)
+        blank=True
+    )
     back_reference_tran_id_number = CharField(
         max_length=20,
         null=True,
-        blank=True)
+        blank=True
+    )
     back_reference_sched_name = CharField(
         max_length=8,
         null=True,
-        blank=True)
+        blank=True
+    )
     entity_type = CharField(
         max_length=3,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_organization_name = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_last_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_first_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_middle_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_prefix = CharField(
         max_length=10,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_suffix = CharField(
         max_length=10,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_street_1 = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_street_2 = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_city = CharField(
         max_length=30,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_state = CharField(
         max_length=2,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_zip_code = CharField(
         max_length=20,
         null=True,
-        blank=True)
+        blank=True
+    )
     election_code = CharField(
         max_length=5,
         null=True,
-        blank=True)
+        blank=True
+    )
     election_other_description = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     contribution_date = models.DateField(
         auto_now=False,
-        null=True)
+        null=True
+    )
     contribution_amount = DecimalField(
         max_digits=16,
         decimal_places=2,
         default=0,
-        null=True)
+        null=True
+    )
     contribution_aggregate = DecimalField(
         max_digits=16,
         decimal_places=2,
         default=0,
-        null=True)
+        null=True
+    )
     contribution_purpose_descrip = CharField(
         max_length=100,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_employer = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     contributor_occupation = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_committee_fec_id = CharField(
         max_length=9,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_committee_name = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_fec_id = CharField(
         max_length=9,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_last_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_first_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_middle_name = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_prefix = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_suffix = CharField(
         max_length=10,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_office = CharField(
         max_length=1,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_state = CharField(
         max_length=2,
         null=True,
-        blank=True)
+        blank=True
+    )
     donor_candidate_district = CharField(
         max_length=2,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_name = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_street1 = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_street2 = CharField(
         max_length=50,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_city = CharField(
         max_length=30,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_state = CharField(
         max_length=2,
         null=True,
-        blank=True)
+        blank=True
+    )
     conduit_zip_code = CharField(
         max_length=20,
         null=True,
-        blank=True)
+        blank=True
+    )
     memo_code = CharField(
         max_length=1,
         null=True,
-        blank=True)
+        blank=True
+    )
     memo_text_description = CharField(
         max_length=200,
         null=True,
-        blank=True)
+        blank=True
+    )
     reference_code = CharField(
         max_length=9,
         null=True,
