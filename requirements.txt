@@ -1,0 +1,9 @@
+Django==1.8.6
+django-postgres-copy==0.0.6
+feedparser==5.2.1
+futures==3.0.3
+pep8==1.6.2
+psycopg2==2.6.1
+pyflakes==1.0.0
+tomorrow==0.2.3
+wheel==0.24.0
