@@ -1,0 +1,23 @@
+language: python
+
+sudo: false
+
+python:
+ - "2.7"
+
+env:
+ - DJANGO_VERSION=1.7.10
+ - DJANGO_VERSION=1.8.4
+ - DJANGO_VERSION=1.9rc1
+
+install:
+ - pip install -r requirements.txt
+ - pip uninstall -y Django
+ - pip install -q Django==$DJANGO_VERSION
+
+before_script:
+  - psql -c 'create database fec_raw;' -U postgres
+  - cp example/project/settings_postgresql.template example/project/settings_local.py
+
+script:
+ - python example/manage.py test fec_raw
