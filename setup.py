@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from setuptools import setup
 
 
 setup(
     name='django-fec-raw-data',
-    version='0.0.1',
-     packages=(
+    version='0.0.2',
+    packages=(
         'fec_raw',
         'fec_raw.management',
         'fec_raw.management.commands',
