@@ -14,10 +14,14 @@ install:
  - pip install -r requirements.txt
  - pip uninstall -y Django
  - pip install -q Django==$DJANGO_VERSION
+ - pip install coverage python-coveralls
 
 before_script:
   - psql -c 'create database fec_raw;' -U postgres
   - cp example/project/settings_test_postgresql.py.template example/project/settings_local.py
 
 script:
- - python example/manage.py test fec_raw
+ - coverage run example/manage.py test fec_raw
+
+after_success:
+ - coveralls

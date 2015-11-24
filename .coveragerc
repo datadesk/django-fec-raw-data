@@ -1,0 +1,13 @@
+[run]
+include =
+    fec_raw/admin.py
+    fec_raw/fields.py
+    fec_raw/models/filing.py
+    fec_raw/models/line_item.py
+    fec_raw/management/commands/downloadfecrawdata.py
+    fec_raw/management/commands/loadfecrawdata.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    add_introspection_rules
