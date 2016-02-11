@@ -37,7 +37,7 @@ class Command(FecCommand):
         }
 
         if options['flush']:
-            logger.info('Flushing the DB')
+            self.log('Flushing the DB')
             for model in name_to_model.values():
                 model.objects.all().delete()
 
