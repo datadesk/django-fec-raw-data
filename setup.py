@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='django-fec-raw-data',
-    version='0.0.2',
+    version='0.0.3',
     packages=(
         'fec_raw',
         'fec_raw.management',
